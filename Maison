@@ -1,1 +1,319 @@
+"use client";
 
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+const images = [
+  "/images/IMG-20240116-WA0013__1_.jpg",
+  "/images/20240922_183206.png",
+  "/images/Screenshot_20220126-164222_Instagram.jpg",
+];
+
+const fadeVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 2, ease: "easeInOut" } },
+  exit: { opacity: 0, transition: { duration: 2, ease: "easeInOut" } },
+};
+
+const contentVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 1.2, delay, ease: [0.25, 0.1, 0.25, 1] },
+  }),
+};
+
+export default function ComingSoon() {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % images.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Cormorant+Garamond:wght@300;400&family=JetBrains+Mono:wght@300;400&family=Inter:wght@300;400&display=swap');
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+          --obsidian: #0a0a0a;
+          --obsidian-mid: #111111;
+          --parchment: #f0ebe0;
+          --parchment-dim: rgba(240, 235, 224, 0.72);
+          --parchment-faint: rgba(240, 235, 224, 0.38);
+          --gold-whisper: rgba(212, 192, 152, 0.55);
+          --glass-bg: rgba(10, 10, 10, 0.45);
+          --glass-border: rgba(240, 235, 224, 0.10);
+        }
+
+        html, body { height: 100%; background: var(--obsidian); }
+
+        .grain-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 2;
+          pointer-events: none;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+          background-repeat: repeat;
+          background-size: 180px 180px;
+          opacity: 0.045;
+          mix-blend-mode: overlay;
+        }
+
+        .bg-layer {
+          position: fixed;
+          inset: 0;
+          z-index: 0;
+        }
+
+        .bg-image {
+          position: absolute;
+          inset: 0;
+          background-size: cover;
+          background-position: center;
+          filter: blur(28px) brightness(0.28) saturate(0.6);
+          transform: scale(1.08);
+        }
+
+        .bg-vignette {
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.72) 100%);
+          z-index: 1;
+        }
+
+        .page-wrapper {
+          position: relative;
+          z-index: 10;
+          min-height: 100svh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
+          padding: 3.5rem 1.5rem 2.5rem;
+          gap: 2rem;
+        }
+
+        /* LOGO */
+        .logo {
+          font-family: 'JetBrains Mono', monospace;
+          font-weight: 300;
+          font-size: 0.68rem;
+          letter-spacing: 0.35em;
+          color: var(--parchment-dim);
+          text-transform: uppercase;
+        }
+
+        /* HERO */
+        .hero-glass {
+          width: 100%;
+          max-width: 780px;
+          text-align: center;
+          padding: 3rem 2.5rem;
+          background: var(--glass-bg);
+          border: 1px solid var(--glass-border);
+          border-radius: 2px;
+          backdrop-filter: blur(24px) saturate(1.4);
+          -webkit-backdrop-filter: blur(24px) saturate(1.4);
+          box-shadow: 0 0 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(240,235,224,0.06);
+        }
+
+        .hero-headline {
+          font-family: 'DM Serif Display', serif;
+          font-size: clamp(2rem, 5.5vw, 3.6rem);
+          font-weight: 400;
+          line-height: 1.18;
+          color: var(--parchment);
+          letter-spacing: -0.01em;
+        }
+
+        .hero-divider {
+          display: block;
+          color: var(--gold-whisper);
+          font-family: 'DM Serif Display', serif;
+          font-style: italic;
+          font-size: clamp(1.6rem, 4vw, 2.8rem);
+          margin: 0.1em 0;
+        }
+
+        .hero-subtext {
+          margin-top: 1.5rem;
+          font-family: 'Cormorant Garamond', serif;
+          font-weight: 300;
+          font-size: clamp(1rem, 2vw, 1.2rem);
+          color: var(--parchment-faint);
+          letter-spacing: 0.04em;
+          line-height: 1.7;
+        }
+
+        /* VISION */
+        .vision-glass {
+          width: 100%;
+          max-width: 640px;
+          padding: 2rem 2.25rem;
+          background: rgba(10, 10, 10, 0.35);
+          border: 1px solid var(--glass-border);
+          border-radius: 2px;
+          backdrop-filter: blur(18px);
+          -webkit-backdrop-filter: blur(18px);
+          text-align: center;
+        }
+
+        .vision-eyebrow {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.58rem;
+          letter-spacing: 0.3em;
+          color: var(--gold-whisper);
+          text-transform: uppercase;
+          margin-bottom: 1rem;
+        }
+
+        .vision-text {
+          font-family: 'Cormorant Garamond', serif;
+          font-weight: 300;
+          font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+          line-height: 1.85;
+          color: var(--parchment-faint);
+          letter-spacing: 0.02em;
+        }
+
+        /* FOOTER */
+        .footer-section {
+          width: 100%;
+          max-width: 560px;
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 1.6rem;
+        }
+
+        .light-leaders {
+          font-family: 'DM Serif Display', serif;
+          font-size: clamp(1rem, 2.5vw, 1.35rem);
+          color: var(--parchment-dim);
+          line-height: 1.6;
+          letter-spacing: 0.01em;
+        }
+
+        .light-leaders span {
+          display: block;
+          font-style: italic;
+          font-size: 0.85em;
+          color: var(--parchment-faint);
+          margin-top: 0.25em;
+        }
+
+        .hairline {
+          width: 48px;
+          height: 1px;
+          background: var(--glass-border);
+        }
+
+        .status-marker {
+          font-family: 'JetBrains Mono', monospace;
+          font-weight: 300;
+          font-size: 0.58rem;
+          letter-spacing: 0.3em;
+          color: rgba(240, 235, 224, 0.22);
+          text-transform: uppercase;
+        }
+
+        @media (max-width: 600px) {
+          .page-wrapper { padding: 2.5rem 1rem 2rem; }
+          .hero-glass { padding: 2rem 1.25rem; }
+          .vision-glass { padding: 1.5rem 1.25rem; }
+        }
+      `}</style>
+
+      {/* Grain overlay */}
+      <div className="grain-overlay" aria-hidden="true" />
+
+      {/* Background gallery */}
+      <div className="bg-layer" aria-hidden="true">
+        <AnimatePresence mode="sync">
+          <motion.div
+            key={current}
+            className="bg-image"
+            style={{ backgroundImage: `url(${images[current]})` }}
+            variants={fadeVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          />
+        </AnimatePresence>
+        <div className="bg-vignette" />
+      </div>
+
+      {/* Page content */}
+      <main className="page-wrapper">
+
+        {/* Logo */}
+        <motion.div
+          custom={0}
+          variants={contentVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <p className="logo">Tailored Maison</p>
+        </motion.div>
+
+        {/* Hero */}
+        <motion.div
+          custom={0.4}
+          variants={contentVariants}
+          initial="hidden"
+          animate="visible"
+          className="hero-glass"
+        >
+          <h1 className="hero-headline">
+            Every business has a story
+            <span className="hero-divider">but not all have a voice</span>
+          </h1>
+          <p className="hero-subtext">
+            Dedicated to bringing stories buried under corporate noise back to life.
+          </p>
+        </motion.div>
+
+        {/* Vision */}
+        <motion.div
+          custom={0.8}
+          variants={contentVariants}
+          initial="hidden"
+          animate="visible"
+          className="vision-glass"
+        >
+          <p className="vision-eyebrow">The Vision</p>
+          <p className="vision-text">
+            Stands for those who keep waking up everyday and choose to wear the Crown
+            of what it means to Serve others. To honor those who keep executing at the
+            highest level in what the world calls mundane, that is excellence.
+          </p>
+        </motion.div>
+
+        {/* Footer */}
+        <motion.div
+          custom={1.2}
+          variants={contentVariants}
+          initial="hidden"
+          animate="visible"
+          className="footer-section"
+        >
+          <p className="light-leaders">
+            Light for Leaders.
+            <span>You do not have to stand alone. Your story matters.</span>
+          </p>
+          <div className="hairline" />
+          <p className="status-marker">Refining Foundations — By Invitation Only</p>
+        </motion.div>
+
+      </main>
+    </>
+  );
+}
